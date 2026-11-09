@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from "udodi-router";
 import { foodStore } from "./store/foodStore.js";
-import { createHomePage } from "./pages/HomePage.js";
-import { createRecipeDetailPage } from "./pages/RecipeDetailPage.js";
-import { createRecipeCreatePage } from "./pages/RecipeCreatePage.js";
-import { createFavoritesPage } from "./pages/FavoritesPage.js";
-import { createPlannerLayout } from "./pages/planner/PlannerLayout.js";
+import { HomePage } from "./pages/HomePage.js";
+import { RecipeDetailPage } from "./pages/RecipeDetailPage.js";
+import { RecipeCreatePage } from "./pages/RecipeCreatePage.js";
+import { FavoritesPage } from "./pages/FavoritesPage.js";
+import { PlannerLayout } from "./pages/planner/PlannerLayout.js";
 import { GuestCalculatorView } from "./pages/planner/GuestCalculatorView.js";
 import { BudgetTrackerView } from "./pages/planner/BudgetTrackerView.js";
 import { ChecklistView } from "./pages/planner/ChecklistView.js";
-import { createSecretVaultPage } from "./pages/SecretVaultPage.js";
-import { createSecretUnlockPage } from "./pages/SecretUnlockPage.js";
-import { createNotFoundPage } from "./pages/NotFoundPage.js";
+import { SecretVaultPage } from "./pages/SecretVaultPage.js";
+import { SecretUnlockPage } from "./pages/SecretUnlockPage.js";
+import { NotFoundPage } from "./pages/NotFoundPage.js";
 
 // Export router instance
 export const router = createRouter({
@@ -18,7 +18,7 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      component: () => createHomePage(router),
+      component: HomePage,
       meta: {
         title: "ChopLife Central — Discover Authentic Nigerian Cuisine",
         description: "Explore traditional Nigerian recipes, firewood Jollof secrets, and Owambe event party planning.",
@@ -26,7 +26,7 @@ export const router = createRouter({
     },
     {
       path: "/recipes/:id(\\d+)",
-      component: () => createRecipeDetailPage(router),
+      component: RecipeDetailPage,
       loader: async ({ params }) => {
         const recipe = foodStore.getRecipeById(params.id);
         if (!recipe) {
@@ -41,7 +41,7 @@ export const router = createRouter({
     },
     {
       path: "/create",
-      component: () => createRecipeCreatePage(router),
+      component: RecipeCreatePage,
       meta: {
         title: "Add Signature Dish — ChopLife Kitchen Studio",
         description: "Register your family secret recipe using Udodi's live validation form engine.",
@@ -49,7 +49,7 @@ export const router = createRouter({
     },
     {
       path: "/favorites",
-      component: () => createFavoritesPage(router),
+      component: FavoritesPage,
       meta: {
         title: "My ChopList — Saved Nigerian Favorites",
         description: "Your saved dishes with one-click grocery shopping list export.",
@@ -57,32 +57,38 @@ export const router = createRouter({
     },
     {
       path: "/planner",
-      component: () => createPlannerLayout(router, "calculator"),
-      meta: {
-        title: "Guest Chow Calculator — Owambe Party Hub",
-        description: "Calculate bags of rice, meat kilos, and drinks for your Owambe party.",
-      },
-    },
-    {
-      path: "/planner/budget",
-      component: () => createPlannerLayout(router, "budget"),
-      meta: {
-        title: "Party Budget & Vendor Tracker — Owambe Hub",
-        description: "Track event food expenses, vendor deposits, and party budget balance.",
-      },
-    },
-    {
-      path: "/planner/checklist",
-      component: () => createPlannerLayout(router, "checklist"),
-      meta: {
-        title: "Kitchen Prep Checklist — Owambe Hub",
-        description: "Interactive party prep timeline and cooking task checklist.",
-      },
+      component: PlannerLayout,
+      children: [
+        {
+          path: "",
+          component: GuestCalculatorView,
+          meta: {
+            title: "Guest Chow Calculator — Owambe Party Hub",
+            description: "Calculate bags of rice, meat kilos, and drinks for your Owambe party.",
+          },
+        },
+        {
+          path: "budget",
+          component: BudgetTrackerView,
+          meta: {
+            title: "Party Budget & Vendor Tracker — Owambe Hub",
+            description: "Track event food expenses, vendor deposits, and party budget balance.",
+          },
+        },
+        {
+          path: "checklist",
+          component: ChecklistView,
+          meta: {
+            title: "Kitchen Prep Checklist — Owambe Hub",
+            description: "Interactive party prep timeline and cooking task checklist.",
+          },
+        },
+      ],
     },
     {
       path: "/secret-vault",
-      component: () => createSecretVaultPage(router),
-      beforeEnter: ({ context }) => {
+      component: SecretVaultPage,
+      beforeEnter: () => {
         if (!foodStore.isVaultUnlocked()) {
           return {
             path: "/secret-vault/unlock",
@@ -97,17 +103,21 @@ export const router = createRouter({
     },
     {
       path: "/secret-vault/unlock",
-      component: () => createSecretUnlockPage(router),
+      component: SecretUnlockPage,
       meta: {
         title: "Unlock VIP Kitchen — ChopLife Passcode",
       },
     },
     {
       path: "*",
-      component: () => createNotFoundPage(router),
+      component: NotFoundPage,
       meta: {
         title: "404 — Dish Not Found | ChopLife Central",
       },
     },
   ],
 });
+
+if (typeof globalThis !== "undefined") {
+  globalThis.__choplife_router = router;
+}

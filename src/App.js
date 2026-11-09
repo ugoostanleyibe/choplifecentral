@@ -1,6 +1,6 @@
 import { createComponent, html, css } from "udodi";
 import { router } from "./router.js";
-import { createNavbar } from "./components/Navbar.js";
+import { Navbar } from "./components/Navbar.js";
 import { Footer } from "./components/Footer.js";
 import { Toast } from "./components/Toast.js";
 import { foodStore } from "./store/foodStore.js";
@@ -37,7 +37,7 @@ export const App = createComponent({
 
   template: () => html`
     <div class="app-layout">
-      ${createNavbar(router)}
+      ${Navbar()}
 
       <main class="main-outlet-wrapper">
         ${router.RouterView()}

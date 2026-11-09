@@ -1,191 +1,207 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
-import { createRecipeCard } from "../components/RecipeCard.js";
+import { RecipeCard } from "../components/RecipeCard.js";
+import { router } from "../router.js";
 
-export function createFavoritesPage(router) {
-  return createComponent({
-    name: "FavoritesPage",
+/**
+ * FavoritesPage Component (ChopList)
+ */
+export const FavoritesPage = createComponent({
+  name: "FavoritesPage",
 
-    methods: {
-      getSavedRecipes() {
-        return foodStore.getFavoriteRecipes();
-      },
-
-      getCount() {
-        return foodStore.getFavoritesCount();
-      },
-
-      hasFavorites() {
-        return this.getCount() > 0;
-      },
-
-      isEmpty() {
-        return this.getCount() === 0;
-      },
-
-      goToDiscover() {
-        router.push("/");
-      },
-
-      copyGroceryList() {
-        const favs = foodStore.getFavoriteRecipes();
-        if (favs.length === 0) return;
-
-        let listText = "🍲 CHOPLIFE GROCERY SHOPPING LIST 🍲\n\n";
-        favs.forEach((r) => {
-          listText += `=== ${r.title} ===\n`;
-          (r.ingredients || []).forEach((ing) => {
-            listText += `• ${ing.item} (${ing.amount ? ing.amount + " " : ""}${ing.unit})\n`;
-          });
-          listText += "\n";
-        });
-
-        try {
-          navigator.clipboard.writeText(listText);
-          foodStore.showToast("📋 All ingredients copied to your clipboard! Ready for the market!", "success");
-        } catch {
-          foodStore.showToast("Ingredients compiled!", "info");
-        }
-      },
+  computed: {
+    savedRecipes() {
+      return foodStore.getFavoriteRecipes();
     },
 
-    style: css`
-      :scope {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
+    count(ctx) {
+      return ctx.savedRecipes.length;
+    },
+
+    hasFavorites(ctx) {
+      return ctx.count > 0;
+    },
+
+    isEmpty(ctx) {
+      return ctx.count === 0;
+    },
+  },
+
+  methods: {
+    goToDiscover() {
+      router.push("/");
+    },
+
+    copyGroceryList() {
+      const favs = foodStore.getFavoriteRecipes();
+      if (favs.length === 0) return;
+
+      let listText = "🍲 CHOPLIFE GROCERY SHOPPING LIST 🍲\n\n";
+      favs.forEach((r) => {
+        listText += `=== ${r.title} ===\n`;
+        (r.ingredients || []).forEach((ing) => {
+          listText += `• ${ing.item} (${ing.amount ? ing.amount + " " : ""}${ing.unit})\n`;
+        });
+        listText += "\n";
+      });
+
+      try {
+        navigator.clipboard.writeText(listText);
+        foodStore.showToast("📋 All ingredients copied to your clipboard! Ready for the market!", "success");
+      } catch {
+        foodStore.showToast("Ingredients compiled!", "info");
       }
+    },
+  },
 
-      .fav-header-card {
-        background: radial-gradient(circle at 10% 20%, rgba(239, 68, 68, 0.15), transparent 40%),
-                    var(--card-bg, #1e293b);
-        border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
-        border-radius: 24px;
-        padding: 2.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-      }
+  style: css`
+    :scope {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
 
-      .fav-title {
-        font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-        font-weight: 900;
-        margin: 0 0 0.5rem;
-        color: var(--text-heading, #f8fafc);
-      }
+    .fav-header-card {
+      background: radial-gradient(circle at 10% 20%, rgba(239, 68, 68, 0.15), transparent 40%),
+                  var(--card-bg, #1e293b);
+      border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+      border-radius: 24px;
+      padding: 2.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+    }
 
-      .fav-subtitle {
-        font-size: 0.95rem;
-        color: var(--text-muted, #94a3b8);
-        margin: 0;
-      }
+    .fav-title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      margin: 0 0 0.5rem;
+      color: var(--text-heading, #f8fafc);
+    }
 
-      .btn-copy-list {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-        color: #0f172a;
-        font-weight: 800;
-        border: none;
-        padding: 0.8rem 1.6rem;
-        border-radius: 999px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.25);
-        transition: transform 0.2s;
-      }
+    .fav-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted, #94a3b8);
+      max-width: 580px;
+      margin: 0;
+      line-height: 1.5;
+    }
 
-      .btn-copy-list:hover {
-        transform: translateY(-2px);
-      }
+    .btn-copy-list {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s;
+    }
 
-      .fav-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.75rem;
-      }
+    .btn-copy-list:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -4px rgba(16, 185, 129, 0.5);
+    }
 
-      .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: var(--card-bg, #1e293b);
-        border: 1px dashed var(--border-color, rgba(255, 255, 255, 0.15));
-        border-radius: 24px;
-      }
+    .fav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.75rem;
+    }
 
-      .empty-emoji {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-      }
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      background: var(--card-bg, #1e293b);
+      border-radius: 24px;
+      border: 1px dashed var(--border-color, rgba(255, 255, 255, 0.15));
+    }
 
-      .empty-title {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: var(--text-heading, #f8fafc);
-        margin: 0 0 0.5rem;
-      }
+    .empty-emoji {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
 
-      .empty-desc {
-        color: var(--text-muted, #94a3b8);
-        font-size: 0.95rem;
-        max-width: 440px;
-        margin: 0 auto 1.5rem;
-        line-height: 1.5;
-      }
+    .empty-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      color: var(--text-heading, #f8fafc);
+    }
 
-      .btn-find-food {
-        background: #10b981;
-        color: white;
-        border: none;
-        padding: 0.75rem 1.6rem;
-        border-radius: 999px;
-        font-weight: 800;
-        cursor: pointer;
-      }
-    `,
+    .empty-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted, #94a3b8);
+      max-width: 440px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.5;
+    }
 
-    template: () => {
-      const favorites = foodStore.getFavoriteRecipes();
+    .btn-find-food {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      padding: 0.75rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+  `,
 
-      return html`
-        <div class="favorites-page-root">
-          <header class="fav-header-card">
-            <div>
-              <h1 class="fav-title">❤️ My ChopList</h1>
-              <p class="fav-subtitle">
-                Your personal stash of saved Nigerian dishes. All ingredients can be exported to your shopping list with one tap.
-              </p>
-            </div>
+  template: () => {
+    const favorites = foodStore.getFavoriteRecipes();
 
-            <div>
-              <button type="button" class="btn-copy-list" @on="click=copyGroceryList">
-                📋 Export Market Shopping List
-              </button>
-            </div>
-          </header>
+    return html`
+      <div class="favorites-page-root">
+        <header class="fav-header-card">
+          <div>
+            <h1 class="fav-title">❤️ My ChopList</h1>
+            <p class="fav-subtitle">
+              Your personal stash of saved Nigerian dishes. All ingredients can be exported to your shopping list with one tap.
+            </p>
+          </div>
 
           <div>
-            ${favorites.length > 0 ? html`
-              <div class="fav-grid">
-                ${favorites.map((r) => createRecipeCard(r, router)).join("\n")}
-              </div>
-            ` : html`
-              <div class="empty-state">
-                <div class="empty-emoji">🍲💨</div>
-                <h3 class="empty-title">Your ChopList is completely empty!</h3>
-                <p class="empty-desc">
-                  You never save any dish yet! Go back to discovery make you tap the heart icon on your favorite dishes.
-                </p>
-                <button type="button" class="btn-find-food" @on="click=goToDiscover">
-                  Discover Delicious Dishes ➔
-                </button>
-              </div>
-            `}
+            <button type="button" class="btn-copy-list" @on="click=copyGroceryList">
+              📋 Export Market Shopping List
+            </button>
           </div>
+        </header>
+
+        <div>
+          ${favorites.length > 0 ? html`
+            <div class="fav-grid">
+              ${favorites.map((r) => RecipeCard({ recipe: r })).join("\n")}
+            </div>
+          ` : html`
+            <div class="empty-state">
+              <div class="empty-emoji">🍲💨</div>
+              <h3 class="empty-title">Your ChopList is completely empty!</h3>
+              <p class="empty-desc">
+                You never save any dish yet! Go back to discovery make you tap the heart icon on your favorite dishes.
+              </p>
+              <button type="button" class="btn-find-food" @on="click=goToDiscover">
+                Discover Delicious Dishes ➔
+              </button>
+            </div>
+          `}
         </div>
-      `;
-    },
-  })();
+      </div>
+    `;
+  },
+});
+
+/**
+ * Backward compatibility helper
+ */
+export function createFavoritesPage() {
+  return FavoritesPage();
 }

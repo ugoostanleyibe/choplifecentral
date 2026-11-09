@@ -1,6 +1,10 @@
-import { createComponent, html, css, store } from "udodi";
+import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
 
+/**
+ * Global Toast Notification Component
+ * Subscribes reactively to foodStore toast state without intervals.
+ */
 export const Toast = createComponent({
   name: "Toast",
 
@@ -13,32 +17,27 @@ export const Toast = createComponent({
   },
 
   onMount(_root, ctx) {
-    const checkToast = () => {
-      const current = store.get("toast");
-      if (current) {
-        ctx.message = current.message || "";
-        ctx.type = current.type || "info";
-        ctx.visible = !!current.visible;
+    // Event-driven reactive subscription to store toast state
+    const unsub = foodStore.subscribe("toast", (toast) => {
+      if (toast) {
+        ctx.message = toast.message || "";
+        ctx.type = toast.type || "info";
+        ctx.visible = !!toast.visible;
       }
-    };
+    });
+    ctx.cleanup(unsub);
+  },
 
-    checkToast();
-    const interval = setInterval(checkToast, 150);
-    ctx.cleanup(() => clearInterval(interval));
+  computed: {
+    toastClass(ctx) {
+      return `toast-pill ${ctx.type || "info"}`;
+    },
   },
 
   methods: {
     dismiss() {
       foodStore.dismissToast();
       this.visible = false;
-    },
-
-    toastClass() {
-      return `toast-pill ${this.type}`;
-    },
-
-    isVisible() {
-      return this.visible;
     },
   },
 

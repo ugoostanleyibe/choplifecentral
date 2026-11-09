@@ -22,6 +22,41 @@ export const BudgetTrackerView = createComponent({
     };
   },
 
+  computed: {
+    getTotalSpent(ctx) {
+      return (ctx.expenses || []).reduce((acc, curr) => acc + curr.amount, 0);
+    },
+
+    getTotalSpentFormatted(ctx) {
+      return "₦" + ctx.getTotalSpent.toLocaleString("en-NG");
+    },
+
+    getBudgetCapFormatted(ctx) {
+      return "₦" + Number(ctx.budgetCap).toLocaleString("en-NG");
+    },
+
+    getRemainingBudgetFormatted(ctx) {
+      const remaining = Number(ctx.budgetCap) - ctx.getTotalSpent;
+      return "₦" + remaining.toLocaleString("en-NG");
+    },
+
+    getPercentUsed(ctx) {
+      const cap = Number(ctx.budgetCap) || 1;
+      return Math.min(100, Math.round((ctx.getTotalSpent / cap) * 100));
+    },
+
+    getProgressWidth(ctx) {
+      return `width: ${ctx.getPercentUsed}%;`;
+    },
+
+    getBudgetStatus(ctx) {
+      const p = ctx.getPercentUsed;
+      if (p < 75) return "Healthy! Plenty change left.";
+      if (p <= 95) return "Caution: Approaching your budget ceiling.";
+      return "Alert: You have reached or exceeded your budget limit!";
+    },
+  },
+
   methods: {
     addExpense() {
       const name = (this.newItemName || "").trim();
@@ -43,39 +78,6 @@ export const BudgetTrackerView = createComponent({
     removeExpense(_event, id) {
       const numericId = Number(id);
       this.expenses = this.expenses.filter((e) => e.id !== numericId);
-    },
-
-    getTotalSpent() {
-      return this.expenses.reduce((acc, curr) => acc + curr.amount, 0);
-    },
-
-    getTotalSpentFormatted() {
-      return "₦" + this.getTotalSpent().toLocaleString("en-NG");
-    },
-
-    getBudgetCapFormatted() {
-      return "₦" + Number(this.budgetCap).toLocaleString("en-NG");
-    },
-
-    getRemainingBudgetFormatted() {
-      const remaining = Number(this.budgetCap) - this.getTotalSpent();
-      return "₦" + remaining.toLocaleString("en-NG");
-    },
-
-    getPercentUsed() {
-      const cap = Number(this.budgetCap) || 1;
-      return Math.min(100, Math.round((this.getTotalSpent() / cap) * 100));
-    },
-
-    getProgressWidth() {
-      return `width: ${this.getPercentUsed()}%;`;
-    },
-
-    getBudgetStatus() {
-      const p = this.getPercentUsed();
-      if (p < 75) return "Healthy! Plenty change left.";
-      if (p <= 95) return "Caution: Approaching your budget ceiling.";
-      return "Alert: You have reached or exceeded your budget limit!";
     },
 
     formatNaira(amount) {

@@ -10,6 +10,49 @@ export const GuestCalculatorView = createComponent({
     };
   },
 
+  computed: {
+    getRiceAmount(ctx) {
+      const g = Number(ctx.guests) || 10;
+      if (ctx.menuType === "grill") return "5 kg (Side Jollof)";
+      const kg = Math.ceil(g * 0.28);
+      const bags = (kg / 50).toFixed(1);
+      return `${kg} kg (~${bags} bag of 50kg)`;
+    },
+
+    getMeatAmount(ctx) {
+      const g = Number(ctx.guests) || 10;
+      const kg = Math.ceil(g * 0.35);
+      return `${kg} kg (Beef / Assorted / Goat)`;
+    },
+
+    getOilAmount(ctx) {
+      const g = Number(ctx.guests) || 10;
+      const liters = Math.ceil(g * 0.1);
+      return `${liters} Liters (Groundnut / Palm oil)`;
+    },
+
+    getDrinksAmount(ctx) {
+      const g = Number(ctx.guests) || 10;
+      const crates = Math.ceil(g * 1.5 / 24);
+      return `${crates} Crates of Malt / Soft Drinks`;
+    },
+
+    getWaterAmount(ctx) {
+      const g = Number(ctx.guests) || 10;
+      const packs = Math.ceil(g * 2 / 12);
+      return `${packs} Packs of Bottled Water`;
+    },
+
+    getEstimatedCost(ctx) {
+      const g = Number(ctx.guests) || 10;
+      let costPerHead = 3500;
+      if (ctx.menuType === "full") costPerHead = 5500;
+      if (ctx.menuType === "grill") costPerHead = 4200;
+      const total = g * costPerHead;
+      return "₦" + total.toLocaleString("en-NG");
+    },
+  },
+
   methods: {
     setGuests(event) {
       this.guests = Number(event.target.value) || 10;
@@ -25,48 +68,6 @@ export const GuestCalculatorView = createComponent({
 
     menuClass(type) {
       return this.menuType === type ? "menu-card active" : "menu-card";
-    },
-
-    // Calculated metrics
-    getRiceAmount() {
-      const g = Number(this.guests) || 10;
-      if (this.menuType === "grill") return "5 kg (Side Jollof)";
-      const kg = Math.ceil(g * 0.28);
-      const bags = (kg / 50).toFixed(1);
-      return `${kg} kg (~${bags} bag of 50kg)`;
-    },
-
-    getMeatAmount() {
-      const g = Number(this.guests) || 10;
-      const kg = Math.ceil(g * 0.35);
-      return `${kg} kg (Beef / Assorted / Goat)`;
-    },
-
-    getOilAmount() {
-      const g = Number(this.guests) || 10;
-      const liters = Math.ceil(g * 0.1);
-      return `${liters} Liters (Groundnut / Palm oil)`;
-    },
-
-    getDrinksAmount() {
-      const g = Number(this.guests) || 10;
-      const crates = Math.ceil(g * 1.5 / 24);
-      return `${crates} Crates of Malt / Soft Drinks`;
-    },
-
-    getWaterAmount() {
-      const g = Number(this.guests) || 10;
-      const packs = Math.ceil(g * 2 / 12);
-      return `${packs} Packs of Bottled Water`;
-    },
-
-    getEstimatedCost() {
-      const g = Number(this.guests) || 10;
-      let costPerHead = 3500;
-      if (this.menuType === "full") costPerHead = 5500;
-      if (this.menuType === "grill") costPerHead = 4200;
-      const total = g * costPerHead;
-      return "₦" + total.toLocaleString("en-NG");
     },
   },
 

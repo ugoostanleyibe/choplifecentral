@@ -1,14 +1,18 @@
 import { createComponent, html, css } from "udodi";
+import { router } from "../router.js";
 
-export function createSecretVaultPage(router) {
-  return createComponent({
-    name: "SecretVaultPage",
+/**
+ * SecretVaultPage Component
+ * Protected VIP route demonstrating Udodi Router navigation guards.
+ */
+export const SecretVaultPage = createComponent({
+  name: "SecretVaultPage",
 
-    methods: {
-      goHome() {
-        router.push("/");
-      },
+  methods: {
+    goHome() {
+      router.push("/");
     },
+  },
 
     style: css`
       :scope {
@@ -154,5 +158,11 @@ export function createSecretVaultPage(router) {
         </div>
       </div>
     `,
-  })();
+});
+
+/**
+ * Backward compatibility helper
+ */
+export function createSecretVaultPage() {
+  return SecretVaultPage();
 }

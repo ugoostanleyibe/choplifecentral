@@ -1,14 +1,17 @@
 import { createComponent, html, css } from "udodi";
+import { router } from "../router.js";
 
-export function createNotFoundPage(router) {
-  return createComponent({
-    name: "NotFoundPage",
+/**
+ * NotFoundPage (404 Fallback View)
+ */
+export const NotFoundPage = createComponent({
+  name: "NotFoundPage",
 
-    methods: {
-      goHome() {
-        router.push("/");
-      },
+  methods: {
+    goHome() {
+      router.push("/");
     },
+  },
 
     style: css`
       :scope {
@@ -93,5 +96,11 @@ export function createNotFoundPage(router) {
         </div>
       </div>
     `,
-  })();
+});
+
+/**
+ * Backward compatibility helper
+ */
+export function createNotFoundPage() {
+  return NotFoundPage();
 }

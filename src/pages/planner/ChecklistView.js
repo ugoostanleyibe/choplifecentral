@@ -21,6 +21,26 @@ export const ChecklistView = createComponent({
     };
   },
 
+  computed: {
+    getFilteredTasks(ctx) {
+      if (ctx.filter === "pending") {
+        return (ctx.tasks || []).filter((t) => !t.done);
+      }
+      if (ctx.filter === "done") {
+        return (ctx.tasks || []).filter((t) => t.done);
+      }
+      return ctx.tasks || [];
+    },
+
+    getTotalDone(ctx) {
+      return (ctx.tasks || []).filter((t) => t.done).length;
+    },
+
+    getTotalCount(ctx) {
+      return (ctx.tasks || []).length;
+    },
+  },
+
   methods: {
     addTask() {
       const text = (this.newText || "").trim();
@@ -46,24 +66,6 @@ export const ChecklistView = createComponent({
 
     setFilter(_event, f) {
       this.filter = f;
-    },
-
-    getFilteredTasks() {
-      if (this.filter === "pending") {
-        return this.tasks.filter((t) => !t.done);
-      }
-      if (this.filter === "done") {
-        return this.tasks.filter((t) => t.done);
-      }
-      return this.tasks;
-    },
-
-    getTotalDone() {
-      return this.tasks.filter((t) => t.done).length;
-    },
-
-    getTotalCount() {
-      return this.tasks.length;
     },
 
     filterClass(f) {

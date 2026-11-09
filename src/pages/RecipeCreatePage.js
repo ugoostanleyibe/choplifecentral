@@ -1,11 +1,15 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
+import { router } from "../router.js";
 
-export function createRecipeCreatePage(router) {
-  return createComponent({
-    name: "RecipeCreatePage",
+/**
+ * RecipeCreatePage Component
+ * Uses Udodi form validation directives (@form, @validate).
+ */
+export const RecipeCreatePage = createComponent({
+  name: "RecipeCreatePage",
 
-    methods: {
+  methods: {
       required(value) {
         if (value && String(value).trim().length > 0) {
           return true;
@@ -418,5 +422,11 @@ export function createRecipeCreatePage(router) {
         </section>
       </div>
     `,
-  })();
+});
+
+/**
+ * Backward compatibility helper
+ */
+export function createRecipeCreatePage() {
+  return RecipeCreatePage();
 }

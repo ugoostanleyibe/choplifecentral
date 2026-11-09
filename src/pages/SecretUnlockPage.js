@@ -1,40 +1,45 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
+import { router } from "../router.js";
 
-export function createSecretUnlockPage(router) {
-  return createComponent({
-    name: "SecretUnlockPage",
+/**
+ * SecretUnlockPage Component
+ */
+export const SecretUnlockPage = createComponent({
+  name: "SecretUnlockPage",
 
-    state() {
-      return {
-        passcode: "",
-        errorMessage: "",
-      };
+  state() {
+    return {
+      passcode: "",
+      errorMessage: "",
+    };
+  },
+
+  computed: {
+    hasError(ctx) {
+      return !!ctx.errorMessage;
+    },
+  },
+
+  methods: {
+    handleUnlock(event) {
+      event?.preventDefault?.();
+      const code = this.passcode || "";
+      const success = foodStore.unlockVault(code);
+
+      if (success) {
+        const redirectTo = router.route.query?.redirect || "/secret-vault";
+        router.replace(redirectTo);
+      } else {
+        this.errorMessage = "Incorrect passcode! Hint: Use VIPCHOPPER";
+      }
     },
 
-    methods: {
-      handleUnlock(event) {
-        event.preventDefault();
-        const code = this.passcode || "";
-        const success = foodStore.unlockVault(code);
-
-        if (success) {
-          const redirectTo = router.route.query?.redirect || "/secret-vault";
-          router.replace(redirectTo);
-        } else {
-          this.errorMessage = "Incorrect passcode! Hint: Use VIPCHOPPER";
-        }
-      },
-
-      fillHint() {
-        this.passcode = "VIPCHOPPER";
-        this.errorMessage = "";
-      },
-
-      hasError() {
-        return !!this.errorMessage;
-      },
+    fillHint() {
+      this.passcode = "VIPCHOPPER";
+      this.errorMessage = "";
     },
+  },
 
     style: css`
       :scope {
@@ -174,5 +179,11 @@ export function createSecretUnlockPage(router) {
         </div>
       </div>
     `,
-  })();
+});
+
+/**
+ * Backward compatibility helper
+ */
+export function createSecretUnlockPage() {
+  return SecretUnlockPage();
 }
