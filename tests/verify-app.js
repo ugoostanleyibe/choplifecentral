@@ -32,6 +32,12 @@ console.log("✓ Hero title found:", titleEl ? titleEl.textContent.trim().replac
 const cards = root.querySelectorAll(".recipe-card");
 console.log(`✓ Recipe cards count on home page: ${cards.length}`);
 
+const visibleSlots = Array.from(root.querySelectorAll(".recipe-card-slot")).filter((el) => !el.hidden);
+console.log(`✓ Visible recipe card slots count: ${visibleSlots.length}`);
+if (visibleSlots.length !== 6) {
+  throw new Error(`Expected 6 visible recipe slots on home page, got ${visibleSlots.length}`);
+}
+
 console.log("\n=== Testing Navigation to /recipes/1 ===");
 const res1 = await router.push("/recipes/1");
 await new Promise((r) => setTimeout(r, 60));

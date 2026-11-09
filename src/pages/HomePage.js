@@ -39,8 +39,10 @@ export function createHomePage(router) {
         router.push("/create");
       },
 
-      isRecipeVisible(_event, id) {
-        const numericId = Number(id);
+      isRecipeVisible(arg1, arg2) {
+        const targetId = (typeof arg1 === "object" && arg1 !== null) ? arg2 : arg1;
+        const numericId = Number(targetId);
+        if (isNaN(numericId)) return true;
         const query = (this.searchQuery || "").toLowerCase().trim();
         const cat = this.selectedCategory;
         const spice = this.selectedSpice;
