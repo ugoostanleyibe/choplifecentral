@@ -2,13 +2,7 @@ import { defineStore } from "udodi";
 import { INITIAL_RECIPES } from "../data/recipesData.js";
 
 function triggerToast(ctx, message, type = "info") {
-  ctx.set("toast", { message, type, visible: true });
-  setTimeout(() => {
-    const current = ctx.get("toast");
-    if (current && current.message === message) {
-      ctx.set("toast", { message: "", type: "info", visible: false });
-    }
-  }, 3500);
+  ctx.set("toast", { message, type, visible: true, timestamp: Date.now() });
 }
 
 /**
@@ -173,5 +167,5 @@ foodStore.showToast = (message, type = "info") => {
 };
 
 foodStore.dismissToast = () => {
-  return foodStore.dispatch("dismissToast");
+  foodStore.set("toast", { message: "", type: "info", visible: false });
 };

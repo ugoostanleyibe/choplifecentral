@@ -17,15 +17,38 @@ export const Toast = createComponent({
   },
 
   onMount(_root, ctx) {
+    let dismissTimer = null;
+
+    const clearDismissTimer = () => {
+      if (dismissTimer) {
+        clearTimeout(dismissTimer);
+        dismissTimer = null;
+      }
+    };
+
     // Event-driven reactive subscription to store toast state
     const unsub = foodStore.subscribe("toast", (toast) => {
-      if (toast) {
+      clearDismissTimer();
+
+      if (toast && toast.visible) {
         ctx.message = toast.message || "";
         ctx.type = toast.type || "info";
-        ctx.visible = !!toast.visible;
+        ctx.visible = true;
+
+        // Presentation concern: auto-dismiss after 3.5 seconds with proper lifecycle cleanup
+        dismissTimer = setTimeout(() => {
+          ctx.visible = false;
+          foodStore.dismissToast();
+        }, 3500);
+      } else {
+        ctx.visible = false;
       }
     });
-    ctx.cleanup(unsub);
+
+    ctx.cleanup(() => {
+      clearDismissTimer();
+      unsub();
+    });
   },
 
   computed: {
@@ -36,8 +59,8 @@ export const Toast = createComponent({
 
   methods: {
     dismiss() {
-      foodStore.dismissToast();
       this.visible = false;
+      foodStore.dismissToast();
     },
   },
 
