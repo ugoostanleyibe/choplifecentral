@@ -124,5 +124,54 @@ if (favBtn.getAttribute("title") !== "Add to ChopList") {
 favBtn.click();
 await new Promise((r) => setTimeout(r, 60));
 
+console.log("=== 7. Testing Category Pill Highlighting & Pluralization ===");
+const { createHomePage } = await import("../src/pages/HomePage.js");
+const homeRoot = document.createElement("div");
+const homePage = createHomePage({ push: () => {} });
+render(homePage, homeRoot);
+
+const catPills = Array.from(homeRoot.querySelectorAll(".category-pills button"));
+const counterEl = homeRoot.querySelector(".results-counter");
+
+// Initial check: "All" pill is active, count says "Showing X dishes"
+const totalCount = foodStore.getAllRecipes().length;
+if (!catPills[0].classList.contains("active")) {
+  throw new Error("Expected 'All' category pill to have 'active' class initially");
+}
+if (counterEl.textContent.trim().replace(/\s+/g, " ") !== `Showing ${totalCount} dishes`) {
+  throw new Error(`Expected 'Showing ${totalCount} dishes', got '${counterEl.textContent.trim().replace(/\s+/g, " ")}'`);
+}
+
+// Click "Jollof & Rice" pill (Pill 1)
+catPills[1].click();
+await new Promise((r) => setTimeout(r, 60));
+
+if (!catPills[1].classList.contains("active")) {
+  throw new Error("Expected 'Jollof & Rice' category pill to be active after click");
+}
+if (catPills[0].classList.contains("active")) {
+  throw new Error("Expected 'All' category pill to no longer be active");
+}
+if (counterEl.textContent.trim().replace(/\s+/g, " ") !== "Showing 1 dish") {
+  throw new Error(`Expected 'Showing 1 dish', got '${counterEl.textContent.trim().replace(/\s+/g, " ")}'`);
+}
+
+// Click "Soups & Swallows" pill (Pill 2)
+catPills[2].click();
+await new Promise((r) => setTimeout(r, 60));
+
+if (!catPills[2].classList.contains("active")) {
+  throw new Error("Expected 'Soups & Swallows' category pill to be active after click");
+}
+if (catPills[1].classList.contains("active")) {
+  throw new Error("Expected 'Jollof & Rice' category pill to no longer be active");
+}
+if (counterEl.textContent.trim().replace(/\s+/g, " ") !== "Showing 2 dishes") {
+  throw new Error(`Expected 'Showing 2 dishes', got '${counterEl.textContent.trim().replace(/\s+/g, " ")}'`);
+}
+
+console.log("✓ Category pills highlight correctly when clicked");
+console.log("✓ Pluralization correctly handles singular '1 dish' and plural 'X dishes'");
+
 console.log("\n=== ALL UNIT & STORE TESTS PASSED CLEANLY! ===");
 process.exit(0);

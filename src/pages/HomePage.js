@@ -17,8 +17,33 @@ export function createHomePage(router) {
     },
 
     methods: {
-      setCategory(_event, cat) {
-        this.selectedCategory = cat;
+      setCategory(arg1, arg2) {
+        const cat = (typeof arg1 === "object" && arg1 !== null) ? arg2 : arg1;
+        this.selectedCategory = cat || "All";
+      },
+
+      setCategoryAll() {
+        this.selectedCategory = "All";
+      },
+
+      setCategoryRice() {
+        this.selectedCategory = "Jollof & Rice";
+      },
+
+      setCategorySoup() {
+        this.selectedCategory = "Soups & Swallows";
+      },
+
+      setCategoryStreet() {
+        this.selectedCategory = "Street Food & Grills";
+      },
+
+      setCategoryComfort() {
+        this.selectedCategory = "Comfort Bowls";
+      },
+
+      setCategoryBites() {
+        this.selectedCategory = "Quick Bites";
       },
 
       setSpice(_event, level) {
@@ -92,6 +117,10 @@ export function createHomePage(router) {
 
       getFilteredCount() {
         return this.getFilteredRecipes().length;
+      },
+
+      getDishesNoun() {
+        return this.getFilteredCount() === 1 ? "dish" : "dishes";
       },
 
       getTotalRecipesCount() {
@@ -495,12 +524,12 @@ export function createHomePage(router) {
             <div class="filters-flex-row">
               <div class="category-pills">
                 <span class="filter-label">Dish:</span>
-                <button type="button" @class="catClass:'All'" @on="click=setCategory:'All'">All</button>
-                <button type="button" @class="catClass:'Jollof & Rice'" @on="click=setCategory:'Jollof & Rice'">Jollof & Rice</button>
-                <button type="button" @class="catClass:'Soups & Swallows'" @on="click=setCategory:'Soups & Swallows'">Soups & Swallows</button>
-                <button type="button" @class="catClass:'Street Food & Grills'" @on="click=setCategory:'Street Food & Grills'">Street Food</button>
-                <button type="button" @class="catClass:'Comfort Bowls'" @on="click=setCategory:'Comfort Bowls'">Comfort Bowls</button>
-                <button type="button" @class="catClass:'Quick Bites'" @on="click=setCategory:'Quick Bites'">Quick Bites</button>
+                <button type="button" class="cat-pill" @class="isAllCat=>'active'" @on="click=setCategoryAll">All</button>
+                <button type="button" class="cat-pill" @class="isRiceCat=>'active'" @on="click=setCategoryRice">Jollof & Rice</button>
+                <button type="button" class="cat-pill" @class="isSoupCat=>'active'" @on="click=setCategorySoup">Soups & Swallows</button>
+                <button type="button" class="cat-pill" @class="isStreetCat=>'active'" @on="click=setCategoryStreet">Street Food</button>
+                <button type="button" class="cat-pill" @class="isComfortCat=>'active'" @on="click=setCategoryComfort">Comfort Bowls</button>
+                <button type="button" class="cat-pill" @class="isBitesCat=>'active'" @on="click=setCategoryBites">Quick Bites</button>
               </div>
 
               <div class="spice-pills">
@@ -518,7 +547,7 @@ export function createHomePage(router) {
             <div class="recipes-grid-header">
               <h2 class="section-heading">Featured Kitchen Showcase</h2>
               <span class="results-counter">
-                Showing <strong @text="getFilteredCount"></strong> dishes
+                Showing <strong @text="getFilteredCount"></strong> <span @text="getDishesNoun"></span>
               </span>
             </div>
 
