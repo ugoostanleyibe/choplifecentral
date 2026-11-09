@@ -31,6 +31,10 @@ export function createRecipeCard(recipe, router) {
         return this.isFav ? "❤️" : "🤍";
       },
 
+      favTooltip() {
+        return this.isFav ? "Remove from ChopList" : "Add to ChopList";
+      },
+
       getSpiceDisplay() {
         const lvl = recipe.spiceLevel || 2;
         return "🌶️".repeat(lvl);
@@ -205,7 +209,7 @@ export function createRecipeCard(recipe, router) {
         <div class="card-media">
           <img class="card-img" src="${recipe.heroImage}" alt="${recipe.title}" loading="lazy" />
           <span class="category-badge">${recipe.category}</span>
-          <button type="button" @class="favClass" @on="click=toggleFav" title="Favorite this dish">
+          <button type="button" @class="favClass" @on="click=toggleFav" @attr="title=favTooltip">
             <span @text="favIcon"></span>
           </button>
         </div>

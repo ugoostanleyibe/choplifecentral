@@ -98,5 +98,31 @@ if (initialToastPill) {
   throw new Error("Expected toast-container to not be in DOM when visible is false");
 }
 
+console.log("=== 6. Testing Favorite Button Tooltip ===");
+const { createRecipeCard } = await import("../src/components/RecipeCard.js");
+const cardRoot = document.createElement("div");
+const mockCardRouter = { push: () => {} };
+// Recipe 1 is initially favorited
+const cardInstance = createRecipeCard(foodStore.getRecipeById(1), mockCardRouter);
+render(cardInstance, cardRoot);
+
+const favBtn = cardRoot.querySelector(".fav-btn");
+console.log("Favorite button tooltip when favorited:", favBtn.getAttribute("title"));
+if (favBtn.getAttribute("title") !== "Remove from ChopList") {
+  throw new Error(`Expected 'Remove from ChopList', got '${favBtn.getAttribute("title")}'`);
+}
+
+// Click to unfavorite
+favBtn.click();
+await new Promise((r) => setTimeout(r, 60));
+console.log("Favorite button tooltip after unfavorite:", favBtn.getAttribute("title"));
+if (favBtn.getAttribute("title") !== "Add to ChopList") {
+  throw new Error(`Expected 'Add to ChopList', got '${favBtn.getAttribute("title")}'`);
+}
+
+// Restore favorite state
+favBtn.click();
+await new Promise((r) => setTimeout(r, 60));
+
 console.log("\n=== ALL UNIT & STORE TESTS PASSED CLEANLY! ===");
 process.exit(0);

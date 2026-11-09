@@ -172,6 +172,10 @@ export function createRecipeDetailPage(router) {
         return this.isFav ? "❤️ In Your ChopList" : "🤍 Add to ChopList";
       },
 
+      favTooltip() {
+        return this.isFav ? "Remove from ChopList" : "Add to ChopList";
+      },
+
       goBack() {
         router.push("/");
       },
@@ -641,7 +645,7 @@ export function createRecipeDetailPage(router) {
             <button type="button" class="btn-back" @on="click=goBack">
               ← Back to Discovery
             </button>
-            <button type="button" class="btn-fav-large" @on="click=toggleFavorite">
+            <button type="button" class="btn-fav-large" @on="click=toggleFavorite" @attr="title=favTooltip">
               <span @text="favIcon"></span>
             </button>
           </div>
