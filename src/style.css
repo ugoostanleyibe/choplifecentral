@@ -1,0 +1,44 @@
+:root {
+  --bg: #0b1120;
+  --surface-bg: #0f172a;
+  --card-bg: #1e293b;
+  --text-heading: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --nav-bg: rgba(15, 23, 42, 0.88);
+  --footer-bg: #070d18;
+}
+
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-heading: #0f172a;
+  --text-muted: #64748b;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --nav-bg: rgba(255, 255, 255, 0.9);
+  --footer-bg: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: var(--bg);
+  color: var(--text-heading);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
