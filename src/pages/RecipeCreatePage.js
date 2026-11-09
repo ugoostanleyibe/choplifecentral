@@ -52,7 +52,7 @@ export function createRecipeCreatePage(router) {
           spiceLevel: Number(data.spiceLevel) || 2,
           servings: Number(data.servings) || 4,
           emoji: data.emoji || "🍲",
-          heroImage: data.heroImage || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
+          heroImage: data.heroImage || "/images/jollof.jpg",
           description: data.description || "A delicious homemade recipe passed down through generations.",
           chefNote: data.chefNote || "Cook with patience and plenty of joy!",
           ingredients: parsedIngredients.length > 0 ? parsedIngredients : [

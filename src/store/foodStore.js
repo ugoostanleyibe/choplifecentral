@@ -56,7 +56,7 @@ export const foodStore = {
       rating: 5.0,
       reviewCount: 1,
       emoji: recipeData.emoji || "🍲",
-      heroImage: recipeData.heroImage || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
+      heroImage: recipeData.heroImage || "/images/jollof.jpg",
       tags: recipeData.tags || ["Community Recipe", "New"],
     };
 
