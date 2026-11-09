@@ -272,7 +272,7 @@ export const ChecklistView = createComponent({
 
       <div class="checklist-items">
         <div
-          @for="item tasks"
+          @for="item getFilteredTasks"
           @key="item.id"
           @class="taskItemClass:item.done"
           @on="click=toggleTask:item.id"

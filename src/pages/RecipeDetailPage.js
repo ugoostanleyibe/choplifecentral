@@ -1,6 +1,42 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
 
+function formatScaledAmount(baseAmount, multiplier) {
+  if (baseAmount === undefined || baseAmount === null || baseAmount === "") {
+    return "";
+  }
+  const str = String(baseAmount).trim();
+  const match = str.match(/^([\d.]+)\s*(.*)$/);
+  if (match) {
+    const num = parseFloat(match[1]);
+    if (!isNaN(num)) {
+      const scaled = num * multiplier;
+      const formatted = Number.isInteger(scaled) ? String(scaled) : String(scaled.toFixed(1));
+      const rest = match[2] ? ` ${match[2]}` : "";
+      return `${formatted}${rest}`;
+    }
+  }
+  const num = parseFloat(str);
+  if (!isNaN(num)) {
+    const scaled = num * multiplier;
+    return Number.isInteger(scaled) ? String(scaled) : String(scaled.toFixed(1));
+  }
+  return str;
+}
+
+function computeScaledIngredients(rawIngredients, multiplier) {
+  return (rawIngredients || []).map((ing, idx) => {
+    const amtStr = formatScaledAmount(ing.amount, multiplier);
+    const unitStr = ing.unit ? ` ${ing.unit}` : "";
+    const display = amtStr ? `${amtStr}${unitStr}` : (ing.unit || "");
+    return {
+      id: idx,
+      item: ing.item,
+      displayAmount: display,
+    };
+  });
+}
+
 export function createRecipeDetailPage(router) {
   return createComponent({
     name: "RecipeDetailPage",
@@ -8,12 +44,15 @@ export function createRecipeDetailPage(router) {
     state() {
       const recipeId = router.route.params?.id || 1;
       const recipe = router.route.data || foodStore.getRecipeById(recipeId) || foodStore.getAllRecipes()[0];
+      const baseServings = recipe.servings || 4;
 
       return {
         recipeId: recipe.id,
         currentRecipe: recipe,
+        baseServings: baseServings,
         servingsMultiplier: 1,
-        activeServings: recipe.servings || 4,
+        activeServings: baseServings,
+        scaledIngredients: computeScaledIngredients(recipe.ingredients, 1),
         isFav: foodStore.isFavorite(recipe.id),
         completedSteps: [],
         timerSeconds: 300, // 5 min default
@@ -46,24 +85,34 @@ export function createRecipeDetailPage(router) {
     },
 
     methods: {
+      recomputeScaled() {
+        this.scaledIngredients = computeScaledIngredients(
+          this.currentRecipe.ingredients,
+          this.servingsMultiplier
+        );
+      },
+
       increaseServings() {
-        const base = this.currentRecipe.servings || 4;
-        this.activeServings = this.activeServings + 2;
+        const base = this.baseServings || 4;
+        this.activeServings = Math.min(50, this.activeServings + 1);
         this.servingsMultiplier = this.activeServings / base;
+        this.recomputeScaled();
       },
 
       decreaseServings() {
-        const base = this.currentRecipe.servings || 4;
-        if (this.activeServings > 2) {
-          this.activeServings = this.activeServings - 2;
+        const base = this.baseServings || 4;
+        if (this.activeServings > 1) {
+          this.activeServings = Math.max(1, this.activeServings - 1);
           this.servingsMultiplier = this.activeServings / base;
+          this.recomputeScaled();
         }
       },
 
       resetServings() {
-        const base = this.currentRecipe.servings || 4;
+        const base = this.baseServings || 4;
         this.activeServings = base;
         this.servingsMultiplier = 1;
+        this.recomputeScaled();
       },
 
       toggleFavorite() {
@@ -645,14 +694,10 @@ export function createRecipeDetailPage(router) {
               </div>
 
               <ul class="ingredients-list">
-                ${(recipe.ingredients || []).map((ing, i) => `
-                  <li class="ingredient-row" key="${i}">
-                    <span class="ing-item">${ing.item}</span>
-                    <span class="ing-amount">
-                      ${ing.amount ? ing.amount : ""} ${ing.unit}
-                    </span>
-                  </li>
-                `).join("")}
+                <li class="ingredient-row" @for="ing scaledIngredients" @key="ing.id">
+                  <span class="ing-item" @text="ing.item"></span>
+                  <span class="ing-amount" @text="ing.displayAmount"></span>
+                </li>
               </ul>
 
               <!-- Kitchen Timer Widget -->
@@ -682,7 +727,7 @@ export function createRecipeDetailPage(router) {
 
               <div class="steps-list">
                 ${(recipe.instructions || []).map((step, idx) => `
-                  <div class="step-card" @on="click=toggleStep:${idx}">
+                  <div @class="stepClass:${idx}" @on="click=toggleStep:${idx}">
                     <div class="step-checkbox">✓</div>
                     <div class="step-content">
                       <div class="step-number">Step ${idx + 1}</div>

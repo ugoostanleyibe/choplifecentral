@@ -39,6 +39,28 @@ export function createHomePage(router) {
         router.push("/create");
       },
 
+      isRecipeVisible(_event, id) {
+        const numericId = Number(id);
+        const query = (this.searchQuery || "").toLowerCase().trim();
+        const cat = this.selectedCategory;
+        const spice = this.selectedSpice;
+        const r = foodStore.getRecipeById(numericId);
+        if (!r) return false;
+        if (cat !== "All" && r.category !== cat) return false;
+        if (spice > 0 && r.spiceLevel !== spice) return false;
+        if (query) {
+          const inTitle = (r.title || "").toLowerCase().includes(query);
+          const inDesc = (r.description || "").toLowerCase().includes(query);
+          const inTags = (r.tags || []).some((t) => t.toLowerCase().includes(query));
+          return inTitle || inDesc || inTags;
+        }
+        return true;
+      },
+
+      hasNoResults() {
+        return this.getFilteredCount() === 0;
+      },
+
       // Filtered recipes
       getFilteredRecipes() {
         const query = (this.searchQuery || "").toLowerCase().trim();
@@ -499,7 +521,20 @@ export function createHomePage(router) {
             </div>
 
             <div class="recipes-grid">
-              ${filtered.map((item) => createRecipeCard(item, router)).join("\n")}
+              ${filtered.map((item) => `
+                <div class="recipe-card-slot" @show="isRecipeVisible:${item.id}">
+                  ${createRecipeCard(item, router)}
+                </div>
+              `).join("\n")}
+            </div>
+
+            <div class="no-results-box" @show="hasNoResults">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🍲💨</div>
+              <h3 class="no-results-title">No dishes match your filter</h3>
+              <p class="no-results-text">
+                Try clearing your search query or picking a different spice heat level.
+              </p>
+              <button type="button" class="btn-reset" @on="click=clearFilters">Reset All Filters</button>
             </div>
           </section>
         </div>

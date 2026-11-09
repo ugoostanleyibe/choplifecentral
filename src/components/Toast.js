@@ -118,7 +118,7 @@ export const Toast = createComponent({
 
   template: () => html`
     <div class="toast-wrapper">
-      <div class="toast-container" @show="isVisible">
+      <div class="toast-container" @if="visible">
         <div @class="toastClass">
           <span @text="message"></span>
           <button type="button" class="toast-close" @on="click=dismiss">×</button>

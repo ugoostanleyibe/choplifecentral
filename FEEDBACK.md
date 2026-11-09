@@ -2,7 +2,7 @@
 
 **Author:** Stanley Ibe  
 **Recipient:** Attamah Celestine C. ([@cocest](https://github.com/cocest)) — Creator of Udodi & Udodi Router  
-**Project Reference:** [ChopLife Central](https://github.com/ugoostanleyibe/choplife)  
+**Project Reference:** [ChopLife Central (GitHub)](https://github.com/ugoostanleyibe/choplifecentral) | [Live Demo (Vercel)](https://choplifecentral.vercel.app)  
 **Date:** November 2026  
 
 ---
@@ -131,6 +131,14 @@ function resolveRouteView() {
 
 ### 4.4 TypeScript Type Definitions
 * Providing complete `.d.ts` definitions for `ComponentOptions`, `RouteRecord`, `NavigationGuard`, and directive handlers will make adoption easier for TypeScript and modern VS Code users.
+
+### 4.5 The CSS Specificity Gotcha with `@show`
+* Udodi implements `@show="expr"` by toggling the element's HTML `hidden` property (`elem.hidden = !visible`).
+* However, in browser CSS engines, default user-agent rules for `[hidden]` (`display: none;`) have lower specificity than ordinary class selectors.
+* If a component stylesheet defines a rule such as `.toast-container { display: flex; }` or `.my-modal { display: block; }`, that rule overrides the browser's `[hidden]` rule, causing the element to remain visible even when `elem.hidden = true`.
+* **Suggestion:**
+  1. Recommend in documentation that projects include `[hidden] { display: none !important; }` in their base CSS reset.
+  2. Alternatively, inject `[hidden] { display: none !important; }` automatically in Udodi's base runtime stylesheet, or have `@show` directly toggle `elem.style.display = visible ? "" : "none"`.
 
 ---
 

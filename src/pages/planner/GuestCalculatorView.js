@@ -29,7 +29,7 @@ export const GuestCalculatorView = createComponent({
 
     // Calculated metrics
     getRiceAmount() {
-      const g = this.guests;
+      const g = Number(this.guests) || 10;
       if (this.menuType === "grill") return "5 kg (Side Jollof)";
       const kg = Math.ceil(g * 0.28);
       const bags = (kg / 50).toFixed(1);
@@ -37,31 +37,31 @@ export const GuestCalculatorView = createComponent({
     },
 
     getMeatAmount() {
-      const g = this.guests;
+      const g = Number(this.guests) || 10;
       const kg = Math.ceil(g * 0.35);
       return `${kg} kg (Beef / Assorted / Goat)`;
     },
 
     getOilAmount() {
-      const g = this.guests;
+      const g = Number(this.guests) || 10;
       const liters = Math.ceil(g * 0.1);
       return `${liters} Liters (Groundnut / Palm oil)`;
     },
 
     getDrinksAmount() {
-      const g = this.guests;
+      const g = Number(this.guests) || 10;
       const crates = Math.ceil(g * 1.5 / 24);
       return `${crates} Crates of Malt / Soft Drinks`;
     },
 
     getWaterAmount() {
-      const g = this.guests;
+      const g = Number(this.guests) || 10;
       const packs = Math.ceil(g * 2 / 12);
       return `${packs} Packs of Bottled Water`;
     },
 
     getEstimatedCost() {
-      const g = this.guests;
+      const g = Number(this.guests) || 10;
       let costPerHead = 3500;
       if (this.menuType === "full") costPerHead = 5500;
       if (this.menuType === "grill") costPerHead = 4200;

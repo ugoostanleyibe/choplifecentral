@@ -72,5 +72,31 @@ render(detailInstance, detailRoot);
 const servingsDisplay = detailRoot.querySelector(".servings-display");
 console.log("Initial active servings:", servingsDisplay ? servingsDisplay.textContent.trim() : "NO");
 
+const firstIng = detailRoot.querySelector(".ingredient-row .ing-amount");
+console.log("Initial first ingredient amount:", firstIng ? firstIng.textContent.trim() : "NO");
+
+// Click "+" button to increase servings
+const btnPlus = detailRoot.querySelectorAll(".btn-scale")[1];
+btnPlus.click();
+await new Promise((r) => setTimeout(r, 60));
+
+console.log("After '+' click active servings:", servingsDisplay ? servingsDisplay.textContent.trim() : "NO");
+console.log("After '+' click first ingredient amount:", firstIng ? firstIng.textContent.trim() : "NO");
+
+if (servingsDisplay.textContent.trim() !== "7 pers.") {
+  throw new Error(`Expected servings to be '7 pers.', got '${servingsDisplay.textContent.trim()}'`);
+}
+
+console.log("=== 5. Testing Toast Component Visibility ===");
+const { Toast } = await import("../src/components/Toast.js");
+const toastRoot = document.createElement("div");
+render(Toast(), toastRoot);
+
+const initialToastPill = toastRoot.querySelector(".toast-container");
+console.log("Toast pill present when hidden:", !!initialToastPill);
+if (initialToastPill) {
+  throw new Error("Expected toast-container to not be in DOM when visible is false");
+}
+
 console.log("\n=== ALL UNIT & STORE TESTS PASSED CLEANLY! ===");
 process.exit(0);

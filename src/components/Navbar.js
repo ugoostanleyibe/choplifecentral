@@ -237,10 +237,12 @@ export function createNavbar(router) {
     template: () => html`
       <header class="navbar-root">
         <div class="nav-container">
-          <a href="#/" class="nav-brand">
-            <span class="brand-icon">🍲</span>
-            <span>ChopLife<span class="brand-accent">Central</span></span>
-          </a>
+          ${router.Link({ to: "/", exact: true }, html`
+            <a class="nav-brand">
+              <span class="brand-icon">🍲</span>
+              <span>ChopLife<span class="brand-accent">Central</span></span>
+            </a>
+          `)}
 
           <nav class="nav-links">
             ${router.Link({ to: "/", exact: true }, html`
@@ -299,7 +301,7 @@ export function createNavbar(router) {
           `)}
         </div>
 
-        <div class="pending-indicator-bar" @show="isNavigating"></div>
+        <div class="pending-indicator-bar" @if="isNavigating"></div>
       </header>
     `,
   })();
