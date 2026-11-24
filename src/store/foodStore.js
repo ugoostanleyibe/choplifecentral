@@ -1,13 +1,15 @@
-import { defineStore } from "udodi";
+import { defineStore } from "./index.js";
 import { INITIAL_RECIPES } from "../data/recipesData.js";
+import { appStore } from "./appStore.js";
 
 function triggerToast(ctx, message, type = "info") {
   ctx.set("toast", { message, type, visible: true, timestamp: Date.now() });
+  appStore.store.dispatch("app:showToast", { message, type });
 }
 
 /**
  * ChopLife Central Food Store Module
- * Built with Udodi's defineStore registry and native IndexedDB persistence.
+ * Powered by upgraded core Store registry and IndexedDB persistence.
  */
 export const foodStore = defineStore("food", {
   state: {
@@ -59,6 +61,7 @@ export const foodStore = defineStore("food", {
       const current = ctx.get("theme") || "dark";
       const next = current === "dark" ? "light" : "dark";
       ctx.set("theme", next);
+      appStore.store.dispatch("app:setTheme", next);
       if (typeof document !== "undefined" && document.documentElement) {
         document.documentElement.dataset.theme = next;
       }
@@ -68,6 +71,7 @@ export const foodStore = defineStore("food", {
     unlockVault(ctx, passcode) {
       if ((passcode || "").trim().toUpperCase() === "VIPCHOPPER") {
         ctx.set("vaultUnlocked", true);
+        appStore.store.dispatch("app:unlockVault", passcode);
         triggerToast(ctx, "Odogwu! VIP Kitchen unlocked successfully!", "success");
         return true;
       }
@@ -81,11 +85,12 @@ export const foodStore = defineStore("food", {
 
     dismissToast(ctx) {
       ctx.set("toast", { message: "", type: "info", visible: false });
+      appStore.store.dispatch("app:dismissToast");
     },
   },
 });
 
-// Enable native Udodi persistence via IndexedDB for offline-first resilience
+// Enable persistence via IndexedDB
 foodStore.persist(["favorites", "customRecipes", "theme"], {
   dbName: "choplife-store",
   storeName: "food-state",
@@ -168,4 +173,5 @@ foodStore.showToast = (message, type = "info") => {
 
 foodStore.dismissToast = () => {
   foodStore.set("toast", { message: "", type: "info", visible: false });
+  appStore.store.dispatch("app:dismissToast");
 };

@@ -260,6 +260,10 @@ export const Navbar = createComponent({
           ${router.Link({ to: "/secret-vault" }, html`
             <a @class="isActive=>'active' 'nav-link-item'">VIP Vault 🔒</a>
           `)}
+
+          ${router.Link({ to: "/store-lab" }, html`
+            <a @class="isActive=>'active' 'nav-link-item'">⚡ Store Lab</a>
+          `)}
         </nav>
 
         <div class="nav-actions">
@@ -292,6 +296,9 @@ export const Navbar = createComponent({
         `)}
         ${router.Link({ to: "/secret-vault" }, html`
           <a @class="isActive=>'active' 'nav-link-item'" @on="click=closeMobileMenu">VIP Vault 🔒</a>
+        `)}
+        ${router.Link({ to: "/store-lab" }, html`
+          <a @class="isActive=>'active' 'nav-link-item'" @on="click=closeMobileMenu">⚡ Store Lab</a>
         `)}
       </div>
 

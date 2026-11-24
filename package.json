@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node tests/verify-app.js && node tests/verify-features.js"
+    "test": "node tests/verify-app.js && node tests/verify-features.js && node tests/verify-store.js"
   },
   "dependencies": {
     "udodi": "^1.1.7",
