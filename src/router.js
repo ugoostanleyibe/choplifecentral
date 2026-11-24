@@ -10,6 +10,7 @@ import { BudgetTrackerView } from "./pages/planner/BudgetTrackerView.js";
 import { ChecklistView } from "./pages/planner/ChecklistView.js";
 import { SecretVaultPage } from "./pages/SecretVaultPage.js";
 import { SecretUnlockPage } from "./pages/SecretUnlockPage.js";
+import { StorePlaygroundPage } from "./pages/StorePlaygroundPage.js";
 import { NotFoundPage } from "./pages/NotFoundPage.js";
 
 // Export router instance
@@ -106,6 +107,14 @@ export const router = createRouter({
       component: SecretUnlockPage,
       meta: {
         title: "Unlock VIP Kitchen — ChopLife Passcode",
+      },
+    },
+    {
+      path: "/store-lab",
+      component: StorePlaygroundPage,
+      meta: {
+        title: "Store Lab — ChopLife State & Architecture Showcase",
+        description: "Interactive Udodi Store & appStore playground with fine-grained reactivity, batching, and IndexedDB.",
       },
     },
     {
