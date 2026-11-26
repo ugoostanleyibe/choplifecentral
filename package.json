@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "udodi": "^1.1.7",
-    "udodi-router": "^1.1.1"
+    "udodi-router": "^1.1.2"
   },
   "devDependencies": {
     "happy-dom": "^21.0.4",
-    "vite": "^6.2.0"
+    "vite": "^6.4.6"
   }
 }
