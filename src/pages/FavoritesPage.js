@@ -1,5 +1,6 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
+import { appStore } from "../store/appStore.js";
 import { RecipeCard } from "../components/RecipeCard.js";
 import { router } from "../router.js";
 
@@ -11,7 +12,7 @@ export const FavoritesPage = createComponent({
 
   computed: {
     savedRecipes() {
-      return foodStore.getFavoriteRecipes();
+      return foodStore.favoriteRecipes();
     },
 
     count(ctx) {
@@ -47,9 +48,9 @@ export const FavoritesPage = createComponent({
 
       try {
         navigator.clipboard.writeText(listText);
-        foodStore.showToast("📋 All ingredients copied to your clipboard! Ready for the market!", "success");
+        appStore.showToast("📋 All ingredients copied to your clipboard! Ready for the market!", "success");
       } catch {
-        foodStore.showToast("Ingredients compiled!", "info");
+        appStore.showToast("Ingredients compiled!", "info");
       }
     },
   },

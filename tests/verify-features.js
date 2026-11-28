@@ -12,6 +12,7 @@ globalThis.history = window.history;
 globalThis.MutationObserver = window.MutationObserver;
 
 const { foodStore } = await import("../src/store/foodStore.js");
+const { appStore } = await import("../src/store/appStore.js");
 const { createRecipeDetailPage } = await import("../src/pages/RecipeDetailPage.js");
 const { render } = await import("udodi");
 
@@ -38,7 +39,7 @@ console.log("Found recipes matching 'Soups & Swallows':", soupResults.length);
 if (soupResults.length !== 2) throw new Error("Expected 2 soup recipes");
 
 console.log("=== 3. Testing Adding Custom Recipe to Store ===");
-const custom = foodStore.addRecipe({
+const custom = await foodStore.addRecipe({
   title: "Boli & Spicy Grilled Fish",
   category: "Street Food & Grills",
   prepTime: 20,
@@ -54,6 +55,15 @@ const foundCustom = foodStore.getRecipeById(custom.id);
 console.log("Retrieved custom recipe title:", foundCustom ? foundCustom.title : "NO");
 if (!foundCustom || foundCustom.title !== "Boli & Spicy Grilled Fish") {
   throw new Error("Failed to find newly added custom recipe");
+}
+if (foundCustom.reviewCount !== 1 || foundCustom.heroImage !== "/images/jollof.jpg") {
+  throw new Error("Expected custom recipe to use consistent reviewCount and heroImage fields");
+}
+if (foodStore.allRecipes().length !== allRecipes.length + 1) {
+  throw new Error("Expected reactive foodStore.allRecipes() selector to include new custom recipe");
+}
+if (foodStore.favoritesCount() !== initialFavs || foodStore.favoriteRecipes().length !== initialFavs) {
+  throw new Error("Expected foodStore.favoritesCount() and foodStore.favoriteRecipes() selectors to match favorites");
 }
 
 console.log("=== 4. Testing Recipe Detail Interceptors & Servings Scaling ===");
@@ -172,6 +182,39 @@ if (counterEl.textContent.trim().replace(/\s+/g, " ") !== "Showing 2 dishes") {
 
 console.log("✓ Category pills highlight correctly when clicked");
 console.log("✓ Pluralization correctly handles singular '1 dish' and plural 'X dishes'");
+
+console.log("=== 8. Testing AppStore Theme, Toast & Vault ===");
+if (!appStore.isDarkTheme() || document.documentElement.dataset.theme !== "dark") {
+  throw new Error("Expected initial theme to be dark and synced to documentElement.dataset.theme");
+}
+await appStore.toggleTheme();
+if (appStore.isDarkTheme() || appStore.getTheme() !== "light" || document.documentElement.dataset.theme !== "light") {
+  throw new Error("Expected toggleTheme() to switch to light and sync DOM reactively");
+}
+await appStore.setTheme("dark");
+if (!appStore.isDarkTheme() || document.documentElement.dataset.theme !== "dark") {
+  throw new Error("Expected setTheme('dark') to restore dark theme");
+}
+
+const badUnlock = await appStore.unlockVault("WRONG");
+if (badUnlock || appStore.isVaultUnlocked()) {
+  throw new Error("Expected wrong passcode to fail vault unlock");
+}
+const goodUnlock = await appStore.unlockVault("VIPCHOPPER");
+if (!goodUnlock || !appStore.isVaultUnlocked()) {
+  throw new Error("Expected VIPCHOPPER to unlock vault");
+}
+
+await appStore.showToast("Toast check", "success");
+await new Promise((r) => setTimeout(r, 20));
+if (!toastRoot.querySelector(".toast-container")) {
+  throw new Error("Expected toast-container to appear after appStore.showToast");
+}
+await appStore.dismissToast();
+await new Promise((r) => setTimeout(r, 20));
+if (toastRoot.querySelector(".toast-container")) {
+  throw new Error("Expected toast-container to hide after appStore.dismissToast");
+}
 
 console.log("\n=== ALL UNIT & STORE TESTS PASSED CLEANLY! ===");
 process.exit(0);

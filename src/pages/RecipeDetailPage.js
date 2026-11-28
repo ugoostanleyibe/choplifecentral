@@ -1,5 +1,6 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
+import { appStore } from "../store/appStore.js";
 
 function formatScaledAmount(baseAmount, multiplier) {
   if (baseAmount === undefined || baseAmount === null || baseAmount === "") {
@@ -119,7 +120,7 @@ export const RecipeDetailPage = createComponent({
         ctx.timerSeconds = ctx.timerSeconds - 1;
         if (ctx.timerSeconds === 0) {
           ctx.timerRunning = false;
-          foodStore.showToast("⏰ Food don ready! Kitchen timer finished!", "success");
+          appStore.showToast("⏰ Food don ready! Kitchen timer finished!", "success");
         }
       }
     };

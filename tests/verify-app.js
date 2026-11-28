@@ -15,7 +15,7 @@ globalThis.MutationObserver = window.MutationObserver;
 const { router } = await import("../src/router.js");
 const { App } = await import("../src/App.js");
 const { render } = await import("udodi");
-const { foodStore } = await import("../src/store/foodStore.js");
+const { appStore } = await import("../src/store/appStore.js");
 
 const root = document.createElement("div");
 document.body.appendChild(root);
@@ -78,7 +78,7 @@ const lockTitle = root.querySelector(".lock-title");
 console.log("✓ Lock screen title:", lockTitle ? lockTitle.textContent.trim() : "NO");
 
 console.log("\n=== Unlocking Secret Vault with Passcode ===");
-foodStore.unlockVault("VIPCHOPPER");
+await appStore.unlockVault("VIPCHOPPER");
 const resVaultAuth = await router.push("/secret-vault");
 await new Promise((r) => setTimeout(r, 60));
 console.log("✓ Pushed /secret-vault after auth result:", resVaultAuth.type, "path:", router.route.path);

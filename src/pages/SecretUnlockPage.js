@@ -1,5 +1,5 @@
 import { createComponent, html, css } from "udodi";
-import { foodStore } from "../store/foodStore.js";
+import { appStore } from "../store/appStore.js";
 import { router } from "../router.js";
 
 /**
@@ -22,10 +22,10 @@ export const SecretUnlockPage = createComponent({
   },
 
   methods: {
-    handleUnlock(event) {
+    async handleUnlock(event) {
       event?.preventDefault?.();
       const code = this.passcode || "";
-      const success = foodStore.unlockVault(code);
+      const success = await appStore.unlockVault(code);
 
       if (success) {
         const redirectTo = router.route.query?.redirect || "/secret-vault";
