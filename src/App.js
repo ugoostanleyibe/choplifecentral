@@ -3,14 +3,14 @@ import { router } from "./router.js";
 import { Navbar } from "./components/Navbar.js";
 import { Footer } from "./components/Footer.js";
 import { Toast } from "./components/Toast.js";
-import { foodStore } from "./store/foodStore.js";
+import { appStore } from "./store/appStore.js";
 
 export const App = createComponent({
   name: "ChopLifeApp",
 
   onMount() {
     // Sync initial theme
-    const currentTheme = foodStore.getTheme();
+    const currentTheme = appStore.getTheme();
     document.documentElement.dataset.theme = currentTheme;
   },
 

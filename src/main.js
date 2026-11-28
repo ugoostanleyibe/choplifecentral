@@ -2,15 +2,27 @@ import "./style.css";
 import { render } from "udodi";
 import { router } from "./router.js";
 import { App } from "./App.js";
+import { foodPersistController } from "./store/foodStore.js";
+import { appStore, appPersistController } from "./store/appStore.js";
 
-const rootElement = document.getElementById("app");
+async function bootstrap() {
+  console.log("Initializing ChopLife Central...");
 
-console.log("Initializing ChopLife Central...");
+  // Hydrate IndexedDB persisted state before mounting UI
+  await Promise.all([foodPersistController.ready, appPersistController.ready]);
 
-// Mount root component
-render(App(), rootElement);
+  if (typeof document !== "undefined" && document.documentElement) {
+    document.documentElement.dataset.theme = appStore.getTheme();
+  }
 
-// Wait for router ready
-router.ready.then((result) => {
+  const rootElement = document.getElementById("app");
+
+  // Mount root component
+  render(App(), rootElement);
+
+  // Wait for router ready
+  const result = await router.ready;
   console.log("ChopLife Router ready. Initial route:", router.route.path, result.type);
-});
+}
+
+bootstrap();

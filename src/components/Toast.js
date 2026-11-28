@@ -1,9 +1,9 @@
 import { createComponent, html, css } from "udodi";
-import { foodStore } from "../store/foodStore.js";
+import { appStore } from "../store/appStore.js";
 
 /**
  * Global Toast Notification Component
- * Subscribes reactively to foodStore toast state without intervals.
+ * Subscribes reactively to appStore toast state without intervals.
  */
 export const Toast = createComponent({
   name: "Toast",
@@ -27,7 +27,7 @@ export const Toast = createComponent({
     };
 
     // Event-driven reactive subscription to store toast state
-    const unsub = foodStore.subscribe("toast", (toast) => {
+    const unsub = appStore.subscribe("toast", (toast) => {
       clearDismissTimer();
 
       if (toast && toast.visible) {
@@ -38,7 +38,7 @@ export const Toast = createComponent({
         // Presentation concern: auto-dismiss after 3.5 seconds with proper lifecycle cleanup
         dismissTimer = setTimeout(() => {
           ctx.visible = false;
-          foodStore.dismissToast();
+          appStore.dismissToast();
         }, 3500);
       } else {
         ctx.visible = false;
@@ -60,7 +60,7 @@ export const Toast = createComponent({
   methods: {
     dismiss() {
       this.visible = false;
-      foodStore.dismissToast();
+      appStore.dismissToast();
     },
   },
 

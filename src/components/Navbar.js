@@ -1,5 +1,6 @@
 import { createComponent, html, css } from "udodi";
 import { foodStore } from "../store/foodStore.js";
+import { appStore } from "../store/appStore.js";
 import { router } from "../router.js";
 import { launchPepperQuiz } from "./PepperQuizModal.js";
 
@@ -17,11 +18,11 @@ export const Navbar = createComponent({
 
   computed: {
     getFavBadge() {
-      return String(foodStore.getFavoritesCount());
+      return String(foodStore.favoritesCount());
     },
 
     isDark() {
-      return foodStore.getTheme() === "dark";
+      return appStore.isDarkTheme();
     },
 
     themeIcon(ctx) {
@@ -39,7 +40,7 @@ export const Navbar = createComponent({
 
   methods: {
     toggleTheme() {
-      foodStore.toggleTheme();
+      appStore.toggleTheme();
     },
 
     openQuiz() {

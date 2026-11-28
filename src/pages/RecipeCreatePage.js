@@ -32,7 +32,7 @@ export const RecipeCreatePage = createComponent({
         return "Must be a valid positive number in minutes.";
       },
 
-      handleFormSubmit(submitContext) {
+      async handleFormSubmit(submitContext) {
         const data = Object.fromEntries(submitContext.formData);
 
         // Parse ingredients text into array
@@ -48,7 +48,7 @@ export const RecipeCreatePage = createComponent({
         // Parse instructions text into array
         const rawInstructions = (data.instructions || "").split("\n").filter((l) => l.trim().length > 0);
 
-        const newRecipe = foodStore.addRecipe({
+        const newRecipe = await foodStore.addRecipe({
           title: data.title || "Custom Naija Dish",
           category: data.category || "Jollof & Rice",
           prepTime: Number(data.prepTime) || 15,

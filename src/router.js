@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "udodi-router";
 import { foodStore } from "./store/foodStore.js";
+import { appStore } from "./store/appStore.js";
 import { HomePage } from "./pages/HomePage.js";
 import { RecipeDetailPage } from "./pages/RecipeDetailPage.js";
 import { RecipeCreatePage } from "./pages/RecipeCreatePage.js";
@@ -89,7 +90,7 @@ export const router = createRouter({
       path: "/secret-vault",
       component: SecretVaultPage,
       beforeEnter: () => {
-        if (!foodStore.isVaultUnlocked()) {
+        if (!appStore.isVaultUnlocked()) {
           return {
             path: "/secret-vault/unlock",
             query: { redirect: "/secret-vault" },
